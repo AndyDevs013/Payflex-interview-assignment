@@ -1,0 +1,37 @@
+{
+  "name": "payflex-cypress-tests",
+  "version": "1.0.0",
+  "description": "Cypress E2E tests with Cucumber support for PayFlex",
+  "main": "index.js",
+  "scripts": {
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run",
+    "test": "cypress run",
+    "test:headed": "cypress run --headed",
+    "test:chrome": "cypress run --browser chrome",
+    "test:firefox": "cypress run --browser firefox",
+    "test:dev": "cypress run --env environment=development",
+    "test:staging": "cypress run --env environment=staging,baseUrl=https://staging.payflex.co.za",
+    "test:prod": "cypress run --env environment=production,baseUrl=https://www.payflex.co.za",
+    "open:dev": "cypress open --env environment=development",
+    "open:staging": "cypress open --env environment=staging,baseUrl=https://staging.payflex.co.za",
+    "run:strict": "cypress run",
+    "run:loose": "cypress run --env looseSelectors=true"
+  },
+  "devDependencies": {
+    "cypress": "^13.6.2",
+    "@badeball/cypress-cucumber-preprocessor": "^20.0.2",
+    "@bahmutov/cypress-esbuild-preprocessor": "^2.2.0",
+    "esbuild": "^0.19.11"
+  },
+  "cypress-cucumber-preprocessor": {
+    "nonGlobalStepDefinitions": false,
+    "stepDefinitions": "cypress/e2e/step_definitions/**/*.{js,ts}",
+    "cucumberJson": {
+      "generate": true,
+      "outputFolder": "cypress/reports",
+      "filePrefix": "",
+      "fileSuffix": ".cucumber"
+    }
+  }
+}
