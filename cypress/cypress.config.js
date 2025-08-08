@@ -20,8 +20,8 @@ module.exports = defineConfig({
         })
       );
 
-      // Load environment-specific config if specified
-      const environment = config.env.environment;
+      // Load environment-specific config (default to 'uat' if not provided)
+      const environment = config.env.environment || 'uat';
       if (environment) {
         const envFilePath = path.join(__dirname, 'environments', `cypress.env.${environment}.json`);
         if (fs.existsSync(envFilePath)) {
@@ -29,13 +29,13 @@ module.exports = defineConfig({
           Object.assign(config.env, envConfig);
           console.log(`Loaded environment config: ${environment}`);
         } else {
-          console.warn(`Environment config file not found: ${envFilePath}`);
+          console.warn(`Environment config file not found: ${envFilePath}. Provide --env environment=<name> or add the file.`);
         }
       }
 
       // Validate required environment variables
       if (!config.env.users || !config.env.users.testUser) {
-        throw new Error('Missing required environment configuration: users.testUser not found');
+        throw new Error('Missing required environment configuration: users.testUser not found. Ensure environments/cypress.env.' + environment + '.json contains users.testUser or pass --env environment=<name>.');
       }
 
       // Load environment variables with validation

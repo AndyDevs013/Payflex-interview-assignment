@@ -38,7 +38,8 @@ Cypress.Commands.add('apiLogin', (userType) => {
     const customerPortalUrl = Cypress.env('customerPortalUrl');
     
     // Visit the portal domain first so cookie ops apply to the correct host
-    cy.visit(customerPortalUrl);
+    // Use relative paths so baseUrl is the single source of truth
+    cy.visit('/');
 
     // Set authentication cookies if they exist in the response (for current domain)
     if (response.headers['set-cookie']) {
@@ -76,8 +77,8 @@ Cypress.Commands.add('apiLogin', (userType) => {
       }
     });
     
-    // Now navigate to the dashboard
-    cy.visit(`${customerPortalUrl}customer/dashboard`);
+    // Now navigate to the dashboard (relative to baseUrl)
+    cy.visit('/customer/dashboard');
     
     return cy.wrap(response.body);
   });
