@@ -12,8 +12,8 @@ npx cypress open --env environment=uat
 
 ## Environment setup
 
-- Copy `environments/example.cypress.env.json` to `cypress.env.json` and fill in creds.
-- `cypress.env.json` is git‑ignored. Don’t commit real credentials.
+- Use `environments/cypress.env.uat.json` (already present) for UAT credentials and URLs.
+- To add another environment, create `environments/cypress.env.<name>.json` and run with `--env environment=<name>`.
 
 Minimal example:
 ```json
