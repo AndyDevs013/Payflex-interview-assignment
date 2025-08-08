@@ -5,7 +5,7 @@ E2E tests with Cucumber for the Payflex customer portal.
 ## Quick start
 
 ```bash
-npx cypress install   # first time only
+npm install
 npm run cypress:open
 ```
 
