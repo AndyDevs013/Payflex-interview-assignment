@@ -15,7 +15,11 @@ Cypress.Commands.add('apiLogin', (userType) => {
     throw new Error(`User '${userType}' is missing email or password in environment config`);
   }
 
-  const identityApiUrl = Cypress.env('identityApiUrl');
+  const identityApiUrlRaw = Cypress.env('identityApiUrl');
+  if (!identityApiUrlRaw) {
+    throw new Error('Missing required env: identityApiUrl');
+  }
+  const identityApiUrl = String(identityApiUrlRaw).replace(/\/+$/, '');
 
   cy.request({
     method: 'POST',
@@ -44,9 +48,14 @@ Cypress.Commands.add('apiLogin', (userType) => {
     // Set authentication cookies if they exist in the response (for current domain)
     if (response.headers['set-cookie']) {
       response.headers['set-cookie'].forEach(cookie => {
-        const [cookieStr] = cookie.split(';');
-        const [name, value] = cookieStr.split('=');
-        cy.setCookie(name, value);
+        const semi = cookie.indexOf(';');
+        const cookieStr = semi >= 0 ? cookie.slice(0, semi) : cookie;
+        const eq = cookieStr.indexOf('=');
+        if (eq > 0) {
+          const name = cookieStr.slice(0, eq);
+          const value = cookieStr.slice(eq + 1);
+          cy.setCookie(name, value);
+        }
       });
     }
     

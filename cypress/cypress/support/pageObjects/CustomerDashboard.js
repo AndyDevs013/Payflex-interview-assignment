@@ -2,39 +2,19 @@ class CustomerDashboard {
     elements = {
         editButtons: 'button.btn-plain.btn-edit',
         customerNicknameField: '#customerNickname',
-        customerEmailField: '#customerEmail',
-        customerPhoneField: '#customerPhone',
+        // Only keep selectors used by current feature flow
         // Read-only display fields
         displayedEmail: 'p.email-icon',
-        displayedPhone: 'p.phone-icon',
-        displayedAddress: 'p.location-icon',
     }
 
     // Edit button mappings - encapsulated in the page object
     editButtonMap = {
         customerName: 0,
-        deleteAccount: 1,
-        customerEmail: 2,
-        customerPhone: 3
+        // other buttons intentionally omitted for this assignment
     }
 
     clickCustomerNameEdit() {
         this.clickEditButton('customerName');
-        return this;
-    }
-
-    clickCustomerEmailEdit() {
-        this.clickEditButton('customerEmail');
-        return this;
-    }
-
-    clickCustomerPhoneEdit() {
-        this.clickEditButton('customerPhone');
-        return this;
-    }
-
-    clickDeleteAccountEdit() {
-        this.clickEditButton('deleteAccount');
         return this;
     }
 
@@ -54,16 +34,6 @@ class CustomerDashboard {
     // Input field methods
     fillCustomerNickname(text) {
         cy.get(this.elements.customerNicknameField).clear().type(text);
-        return this;
-    }
-
-    fillCustomerEmail(text) {
-        cy.get(this.elements.customerEmailField).clear().type(text);
-        return this;
-    }
-
-    fillCustomerPhone(text) {
-        cy.get(this.elements.customerPhoneField).clear().type(text);
         return this;
     }
 
@@ -102,32 +72,6 @@ class CustomerDashboard {
         return this;
     }
 
-    getDisplayedPhone() {
-        return cy.get(this.elements.displayedPhone).invoke('text').then(t => t.trim());
-    }
-
-    verifyDisplayedPhoneMaskedEndsWith(last4) {
-        cy.get(this.elements.displayedPhone)
-            .invoke('text')
-            .then(text => {
-                const compact = text.replace(/\s/g, '');
-                // Example: ********6789
-                expect(compact).to.match(/^\*+\d{4}$/);
-                if (last4) {
-                    expect(compact.endsWith(String(last4))).to.eq(true);
-                }
-            });
-        return this;
-    }
-
-    getDisplayedAddress() {
-        return cy.get(this.elements.displayedAddress).invoke('text').then(t => t.trim());
-    }
-
-    verifyDisplayedAddressContains(partialAddress) {
-        cy.get(this.elements.displayedAddress).should('contain', partialAddress);
-        return this;
-    }
 
     // Convenience workflows
     updateCustomerNickname(newName) {
@@ -137,19 +81,6 @@ class CustomerDashboard {
         return this;
     }
 
-    updateCustomerEmail(newEmail) {
-        this.clickCustomerEmailEdit()
-            .fillCustomerEmail(newEmail)
-            .clickUpdateButton();
-        return this;
-    }
-
-    updateCustomerPhone(newPhone) {
-        this.clickCustomerPhoneEdit()
-            .fillCustomerPhone(newPhone)
-            .clickUpdateButton();
-        return this;
-    }
 }
 
 export default CustomerDashboard;

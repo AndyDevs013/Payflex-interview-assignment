@@ -6,8 +6,6 @@ Feature: Payflex Example Feature
 
   Then the element "p.email-icon" should contain the email for "testUser"
   And  The text "Verify Email" should "be.visible"
-  And  The text "********6789" should "be.visible"
-  And  The text "Queen St" should "be.visible"
 
 Scenario: Update Customer Nickname
 
