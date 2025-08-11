@@ -1,0 +1,20 @@
+{
+  "name": "payflex-playwright-tests",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "install-browsers": "playwright install",
+    "stagehand": "node stagehand/smoke.js"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.46.0"
+  },
+  "dependencies": {
+    "@browserbasehq/stagehand": "latest"
+  },
+  "engines": {
+    "node": ">=18.17"
+  }
+}
+
+
