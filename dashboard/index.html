@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payflex Test Results Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/date-fns@2.29.3/index.min.js"></script>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Header -->
+        <header class="dashboard-header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <i class="fas fa-chart-line"></i>
+                    <h1>Payflex Test Dashboard</h1>
+                </div>
+                <div class="header-actions">
+                    <button class="refresh-btn" onclick="refreshDashboard()">
+                        <i class="fas fa-sync-alt"></i>
+                        Refresh
+                    </button>
+                    <div class="last-updated">
+                        Last updated: <span id="lastUpdated">--</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Summary Cards -->
+        <section class="summary-section">
+            <div class="summary-cards">
+                <div class="summary-card success">
+                    <div class="card-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3 id="passedTests">--</h3>
+                        <p>Passed Tests</p>
+                        <span class="trend positive" id="passedTrend">+0%</span>
+                    </div>
+                </div>
+                
+                <div class="summary-card danger">
+                    <div class="card-icon">
+                        <i class="fas fa-times-circle"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3 id="failedTests">--</h3>
+                        <p>Failed Tests</p>
+                        <span class="trend negative" id="failedTrend">+0%</span>
+                    </div>
+                </div>
+                
+                <div class="summary-card warning">
+                    <div class="card-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3 id="skippedTests">--</h3>
+                        <p>Skipped Tests</p>
+                        <span class="trend neutral" id="skippedTrend">+0%</span>
+                    </div>
+                </div>
+                
+                <div class="summary-card info">
+                    <div class="card-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3 id="executionTime">--</h3>
+                        <p>Execution Time</p>
+                        <span class="trend neutral" id="timeTrend">+0%</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Charts Section -->
+        <section class="charts-section">
+            <div class="charts-grid">
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h3>Test Results Overview</h3>
+                        <div class="chart-controls">
+                            <select id="overviewPeriod" onchange="updateOverviewChart()">
+                                <option value="7">Last 7 days</option>
+                                <option value="30">Last 30 days</option>
+                                <option value="90">Last 90 days</option>
+                            </select>
+                        </div>
+                    </div>
+                    <canvas id="overviewChart"></canvas>
+                </div>
+                
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h3>Test Framework Breakdown</h3>
+                    </div>
+                    <canvas id="frameworkChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pipeline Status -->
+        <section class="pipeline-section">
+            <div class="section-header">
+                <h2>Recent Pipeline Runs</h2>
+                <div class="pipeline-filter">
+                    <select id="pipelineFilter" onchange="filterPipelines()">
+                        <option value="all">All Pipelines</option>
+                        <option value="cypress">Cypress Tests</option>
+                        <option value="playwright">Playwright Tests</option>
+                        <option value="smoke">Smoke Tests</option>
+                    </select>
+                </div>
+            </div>
+            <div class="pipeline-list" id="pipelineList">
+                <!-- Pipeline items will be populated by JavaScript -->
+            </div>
+        </section>
+
+        <!-- Test Details -->
+        <section class="test-details-section">
+            <div class="section-header">
+                <h2>Test Results Details</h2>
+                <div class="details-filter">
+                    <input type="text" id="testFilter" placeholder="Filter tests..." onkeyup="filterTests()">
+                    <select id="statusFilter" onchange="filterTests()">
+                        <option value="all">All Status</option>
+                        <option value="passed">Passed</option>
+                        <option value="failed">Failed</option>
+                        <option value="skipped">Skipped</option>
+                    </select>
+                </div>
+            </div>
+            <div class="test-results-table">
+                <table id="testResultsTable">
+                    <thead>
+                        <tr>
+                            <th>Test Name</th>
+                            <th>Framework</th>
+                            <th>Status</th>
+                            <th>Duration</th>
+                            <th>Pipeline</th>
+                            <th>Timestamp</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="testResultsBody">
+                        <!-- Test results will be populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Test Details Modal -->
+        <div id="testModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="modalTestName">Test Details</h3>
+                    <span class="close" onclick="closeModal()">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <div class="test-info">
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <label>Status:</label>
+                                <span id="modalStatus" class="status-badge">--</span>
+                            </div>
+                            <div class="info-item">
+                                <label>Duration:</label>
+                                <span id="modalDuration">--</span>
+                            </div>
+                            <div class="info-item">
+                                <label>Framework:</label>
+                                <span id="modalFramework">--</span>
+                            </div>
+                            <div class="info-item">
+                                <label>Pipeline:</label>
+                                <span id="modalPipeline">--</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="test-output">
+                        <h4>Test Output</h4>
+                        <pre id="modalOutput">No output available</pre>
+                    </div>
+                    <div class="test-error" id="modalErrorSection" style="display: none;">
+                        <h4>Error Details</h4>
+                        <pre id="modalError"></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="dashboard.js"></script>
+</body>
+</html>
