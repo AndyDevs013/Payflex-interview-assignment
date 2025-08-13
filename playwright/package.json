@@ -4,13 +4,16 @@
   "private": true,
   "scripts": {
     "install-browsers": "playwright install",
-    "stagehand": "node stagehand/smoke.js"
+    "test": "mkdir -p test-results && playwright test",
+    "stagehand": "node stagehand/smoke.js",
+    "send-results": "node send-results.js"
   },
   "devDependencies": {
     "@playwright/test": "^1.46.0"
   },
   "dependencies": {
-    "@browserbasehq/stagehand": "latest"
+    "@browserbasehq/stagehand": "latest",
+    "axios": "^1.6.2"
   },
   "engines": {
     "node": ">=18.17"
